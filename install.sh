@@ -15,6 +15,7 @@ docker run -it --rm \
     --network container:wp-admin \
     wordpress:cli wp plugin uninstall akismet hello
 
+### Main Site
 docker run -it --rm \
     --volumes-from wp-main \
     --network container:wp-main \
@@ -23,12 +24,23 @@ docker run -it --rm \
 docker run -it --rm \
     --volumes-from wp-main \
     --network container:wp-main \
-    wordpress:cli wp plugin install mainwp-child --activate
+    wordpress:cli wp plugin install mainwp-child mailchimp-for-wp contact-form-7 --activate
 
 docker run -it --rm \
     --volumes-from wp-main \
     --network container:wp-main \
     wordpress:cli wp plugin uninstall akismet hello
+
+docker run -it --rm \
+    --volumes-from wp-main \
+    -v `pwd`/themes:/tmp/themes \
+    --network container:wp-main \
+    wordpress:cli wp theme install /tmp/themes/corpboot.zip /tmp/themes/corpboot-child-theme.zip
+
+docker run -it --rm \
+    --volumes-from wp-main \
+    --network container:wp-main \
+    wordpress:cli wp theme activate corpboot
 
 docker run -it --rm \
     --volumes-from wp-child \
@@ -38,9 +50,20 @@ docker run -it --rm \
 docker run -it --rm \
     --volumes-from wp-child \
     --network container:wp-child \
-    wordpress:cli wp plugin install mainwp-child --activate
+    wordpress:cli wp plugin install mainwp-child mailchimp-for-wp contact-form-7 --activate
 
 docker run -it --rm \
     --volumes-from wp-child \
     --network container:wp-child \
     wordpress:cli wp plugin uninstall akismet hello
+
+docker run -it --rm \
+    --volumes-from wp-child \
+    -v `pwd`/themes:/tmp/themes \
+    --network container:wp-child \
+    wordpress:cli wp theme install /tmp/themes/corpboot.zip /tmp/themes/corpboot-child-theme.zip
+
+docker run -it --rm \
+    --volumes-from wp-child \
+    --network container:wp-child \
+    wordpress:cli wp theme activate corpboot
